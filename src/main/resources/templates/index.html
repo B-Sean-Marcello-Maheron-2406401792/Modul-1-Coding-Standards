@@ -1,10 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>ADV Shop</title> </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADV Shop - Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .btn-primary {
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .shop-icon { font-size: 3rem; margin-bottom: 20px; }
+    </style>
+</head>
 <body>
-<h3>Welcome</h3> <p>Welcome to ADV Shop!</p>
-<a href="/product/list">View Product List</a>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-7 text-center">
+            <div class="card p-5">
+                <div class="shop-icon">🛒</div>
+                <h1 class="display-4 font-weight-bold mb-3">ADV Shop</h1>
+                <p class="lead text-muted mb-4">Welcome to ADV Shop! Your one-stop destination for managing inventory with ease and efficiency.</p>
+
+                <div class="d-flex justify-content-center">
+                    <a th:href="@{/product/list}" class="btn btn-primary btn-lg">
+                        View Product List →
+                    </a>
+                </div>
+
+                <hr class="my-4">
+                <small class="text-secondary">Logged in as Administrator</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
