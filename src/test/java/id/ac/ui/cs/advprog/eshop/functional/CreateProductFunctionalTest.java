@@ -7,13 +7,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
+import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -31,36 +33,82 @@ class CreateProductFunctionalTest {
     }
 
     @Test
-    void createProduct_isCorrect(ChromeDriver driver) throws Exception {
+    void createProduct_isCorrect(ChromeDriver driver) {
         driver.get(baseUrl + "/product/create");
 
         String inputName = "Sampo Cap Bambang";
-        int inputQuantity = 100;
+        String inputQuantity = "100";
 
-        WebElement nameInput = driver.findElement(By.id("nameInput"));
-        nameInput.clear();
-        nameInput.sendKeys(inputName);
+        driver.findElement(By.id("nameInput")).sendKeys(inputName);
+        driver.findElement(By.id("quantityInput")).sendKeys(inputQuantity);
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        WebElement quantityInput = driver.findElement(By.id("quantityInput"));
-        quantityInput.clear();
-        quantityInput.sendKeys(String.valueOf(inputQuantity));
+        // Gunakan Wait agar tidak failed karena race condition
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.urlContains("/product/list"));
 
-        WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
-        submitButton.click();
+        WebElement table = driver.findElement(By.tagName("table"));
+        assertTrue(table.getText().contains(inputName), "Product name should be visible in the table");
+    }
 
+    @Test
+    void createProduct_withZeroQuantity_isCorrect(ChromeDriver driver) {
+        driver.get(baseUrl + "/product/create");
+
+        String inputName = "Produk Gratis";
+        String inputQuantity = "0";
+
+        driver.findElement(By.id("nameInput")).sendKeys(inputName);
+        driver.findElement(By.id("quantityInput")).sendKeys(inputQuantity);
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.urlContains("/product/list"));
+
+        WebElement table = driver.findElement(By.tagName("table"));
+        assertTrue(table.getText().contains(inputName));
+        assertTrue(table.getText().contains("0"));
+    }
+
+    @Test
+    void createProduct_withEmptyName_shouldStayOnCreatePage(ChromeDriver driver) {
+        driver.get(baseUrl + "/product/create");
+
+        driver.findElement(By.id("nameInput")).clear();
+        driver.findElement(By.id("quantityInput")).sendKeys("10");
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        // Verifikasi URL tidak berubah ke /list (karena validasi menahan submit)
         String currentUrl = driver.getCurrentUrl();
-        assertTrue(currentUrl.contains("/product/list"));
+        assertFalse(currentUrl.contains("/product/list"), "Should not redirect if name is empty");
+    }
 
-        List<WebElement> tableCells = driver.findElements(By.tagName("td"));
+    @Test
+    void createMultipleProducts_allShouldBeVisibleInList(ChromeDriver driver) {
+        String[][] products = {
+                {"Product Alpha", "10"},
+                {"Product Beta", "20"},
+                {"Product Gamma", "30"}
+        };
 
-        boolean isProductFound = false;
-        for (WebElement cell : tableCells) {
-            if (cell.getText().equals(inputName)) {
-                isProductFound = true;
-                break;
-            }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        for (String[] product : products) {
+            driver.get(baseUrl + "/product/create");
+
+            // Tunggu input muncul sebelum mengetik
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nameInput"))).sendKeys(product[0]);
+            driver.findElement(By.id("quantityInput")).sendKeys(product[1]);
+            driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+            // Tunggu sampai balik ke list
+            wait.until(ExpectedConditions.urlContains("/product/list"));
         }
 
-        assertTrue(isProductFound, "Product name should be visible in the product list table");
+        WebElement table = driver.findElement(By.tagName("table"));
+        String tableContent = table.getText();
+        for (String[] product : products) {
+            assertTrue(tableContent.contains(product[0]), "Could not find product: " + product[0]);
+        }
     }
 }
