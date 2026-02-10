@@ -9,4 +9,5 @@ public interface ProductService {
     // Di ProductServiceImpl.java
     public Product findById(String id);
     public Product update(Product product);
+    void delete(String id);
 }
