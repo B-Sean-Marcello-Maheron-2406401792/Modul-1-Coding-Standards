@@ -84,9 +84,9 @@ tasks.jacocoTestReport {
 	dependsOn(tasks.test)
 }
 
-sonar {
+sonarqube {
 	properties {
-		property("sonar.projectKey", "b-sean-marcello-maheron-2406401792_Modul-1-Coding-Standards")
+		property("sonar.projectKey", "B-Sean-Marcello-Maheron-2406401792_Modul-1-Coding-Standards")
 		property("sonar.organization", "b-sean-marcello-maheron-2406401792")
 		property("sonar.host.url", "https://sonarcloud.io")
 	}
