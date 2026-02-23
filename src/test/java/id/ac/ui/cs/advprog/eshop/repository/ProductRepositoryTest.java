@@ -22,6 +22,19 @@ class ProductRepositoryTest {
     }
 
     @Test
+    void testCreateProduct_WhenIdIsNull_ShouldGenerateId() {
+        Product product = new Product();
+        product.setProductId(null);
+        product.setProductName("Test Product");
+        product.setProductQuantity(10);
+
+        Product savedProduct = productRepository.create(product);
+
+        assertNotNull(savedProduct.getProductId());
+        assertFalse(savedProduct.getProductId().isEmpty());
+    }
+
+    @Test
     void testCreateAndFind() {
         Product product = new Product();
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
