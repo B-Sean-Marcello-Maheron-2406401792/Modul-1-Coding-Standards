@@ -4,14 +4,10 @@ import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.List;
 
@@ -19,8 +15,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ProductController.class)
-@Import(ProductControllerTest.TestConfig.class)
+@WebMvcTest(
+        controllers = ProductController.class,
+        excludeAutoConfiguration = ThymeleafAutoConfiguration.class
+)
 class ProductControllerTest {
 
     @Autowired
@@ -28,14 +26,6 @@ class ProductControllerTest {
 
     @MockBean
     private ProductService service;
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public ViewResolver viewResolver() {
-            return new InternalResourceViewResolver();
-        }
-    }
 
     @Test
     void testCreateProductPage() throws Exception {
