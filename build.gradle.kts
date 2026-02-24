@@ -32,24 +32,28 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	// Web & UI
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok")
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
+	// Development Tools
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+	// Lombok (Boilerplate reduction)
+	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
+
+	// Unit & Integration Testing
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-	testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
-	testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
-	testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
-
 	testImplementation("org.mockito:mockito-core:5.11.0")
 	testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
 
-//	testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
-//	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+	// Browser Testing (Selenium)
+	testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
+	testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
+	testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
 }
 
 tasks.register<Test>("unitTest") {
