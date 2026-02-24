@@ -1,4 +1,4 @@
-name: Deploy to Koyeb
+name: CI - Build and Deploy to Koyeb
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,10 +25,3 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew clean build
-
-      - name: Deploy to Koyeb
-        uses: koyeb/action-git-deploy@v1
-        with:
-          api_token: ${{ secrets.KOYEB_API_TOKEN }}
-          app_name: modul-1-coding-standards
-          service_name: web
