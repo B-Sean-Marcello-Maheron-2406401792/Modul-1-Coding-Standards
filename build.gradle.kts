@@ -2,6 +2,7 @@ val seleniumJavaVersion = "4.14.1"
 val seleniumJupiterVersion = "5.0.1"
 val webdrivermanagerVersion = "5.6.3"
 val junitJupiterVersion = "5.9.1"
+val mockitoVersion="5.11.0"
 
 plugins {
 	java
@@ -47,8 +48,8 @@ dependencies {
 	// Unit & Integration Testing
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	testImplementation("org.mockito:mockito-core:5.11.0")
-	testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
+	testImplementation("org.mockito:mockito-core:$mockitoVersion")
+	testImplementation("org.mockito:mockito-junit-jupiter:$mockitoVersion")
 
 	// Browser Testing (Selenium)
 	testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
