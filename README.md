@@ -25,3 +25,26 @@ URL aplikasi saya dideploy: https://only-tamera-b-seanmarcellomaheron-2406401792
 Terakhir, terlampir coverage unit-test saya :3
 
 ![img.png](img.png)
+
+# Module 3
+
+### 1) Explain what principles you apply to your project!
+* **SRP (Single Responsibility Principle)**: Memisahkan tanggung jawab pembuatan ID (UUID) dari CarRepository ke dalam CarServiceImpl. Hal ini memastikan bahwa CarRepository hanya bertanggung jawab pada penyimpanan data, sementara logika bisnis seperti penomoran atau identifikasi berada di layer Service
+* **OCP (Open-Closed Principle):** Memindahkan logika update ke model Car, sehingga CarRepository tertutup dari modifikasi tetapi terbuka untuk ekstensi jika ada atribut baru.
+* **LSP (Liskov Substitution Principle):** Menghapus *inheritance* `CarController extends ProductController` karena *subclass* harus bisa menggantikan *base class* tanpa merusak kebenaran program.
+* **ISP (Interface Segregation Principle):** Tidak ada perubahan karena interface CarService dan CarRepository dirancang spesifik hanya berisi metode operasi CRUD yang sepenuhnya dibutuhkan dan digunakan oleh kliennya, sehingga tidak ada klien yang dipaksa untuk bergantung pada ataupun mengimplementasikan antarmuka yang tidak relevan.
+* **DIP (Dependency Inversion Principle):** Saya membuat interface CarService dan CarRepository. CarController kini bergantung pada abstraksi CarService, dan CarServiceImpl bergantung pada abstraksi CarRepository, bukan pada implementasi konkritnya.
+
+---
+
+### 2) Explain the advantages of applying SOLID principles to your project with examples.
+* **Mudah Diuji (*Testing*):** *Class* yang lebih kecil dan fokus (SRP) membutuhkan lebih sedikit *test case* dan mempermudah isolasi komponen.
+* **Ketergantungan Rendah (*Lower Coupling*):** Bergantung pada *interface* (DIP) dan memisahkan tanggung jawab (SRP) meminimalkan dampak berantai (*ripple effect*) saat ada modifikasi.
+* **Mudah Dikembangkan (*Extensibility*):** Kode menjadi fleksibel untuk ditambah fiturnya tanpa harus membongkar dan berisiko merusak kode lama yang sudah stabil (OCP).
+
+---
+
+### 3) Explain the disadvantages of not applying SOLID principles to your project with examples.
+* **Kode Menjadi Rapuh (*Fragile*):** Tanpa SRP dan OCP, mengubah satu fitur dapat secara tidak sengaja mematahkan fitur lain karena logika yang saling tumpang tindih.
+* **Sulit Dipahami dan Dikelola:** *Class* yang menanggung banyak tugas (monolitik) sangat sulit dinavigasi dan membuat *developer* takut untuk melakukan perubahan.
+* **Pengujian Terhambat:** Kode yang saling terikat erat (*tightly coupled*) tanpa abstraksi antarmuka (melanggar DIP) tidak bisa diisolasi, sehingga *unit testing* menjadi sangat sulit dilakukan.

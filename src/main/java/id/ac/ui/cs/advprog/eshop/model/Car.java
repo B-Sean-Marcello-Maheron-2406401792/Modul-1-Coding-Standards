@@ -8,4 +8,10 @@ public class Car {
     private String carName;
     private String carColor;
     private int carQuantity;
+
+    public void update(Car updatedCar) {
+        this.carName = updatedCar.getCarName();
+        this.carColor = updatedCar.getCarColor();
+        this.carQuantity = updatedCar.getCarQuantity();
+    }
 }
