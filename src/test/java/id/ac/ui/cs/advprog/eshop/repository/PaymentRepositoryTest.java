@@ -60,4 +60,14 @@ class PaymentRepositoryTest {
         List<Payment> allPayments = paymentRepository.getAllPayments();
         assertEquals(1, allPayments.size());
     }
+
+    @Test
+    void testGetAllPaymentsReturnsDefensiveCopy() {
+        paymentRepository.save(payment);
+        List<Payment> allPayments = paymentRepository.getAllPayments();
+
+        allPayments.clear();
+
+        assertEquals(1, paymentRepository.getAllPayments().size());
+    }
 }
