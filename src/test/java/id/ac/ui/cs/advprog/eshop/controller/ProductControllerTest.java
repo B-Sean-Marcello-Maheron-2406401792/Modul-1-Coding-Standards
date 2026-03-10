@@ -2,24 +2,23 @@ package id.ac.ui.cs.advprog.eshop.controller;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(
-        controllers = ProductControllerTest.class,
-        excludeAutoConfiguration = ThymeleafAutoConfiguration.class
-)
+@WebMvcTest(controllers = ProductController.class)
 class ProductControllerTest {
 
     @Autowired
@@ -28,64 +27,72 @@ class ProductControllerTest {
     @MockitoBean
     private ProductService service;
 
+    private Product product;
+
+    @BeforeEach
+    void setUp() {
+        product = new Product();
+        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+    }
+
     @Test
     void testCreateProductPage() throws Exception {
         mockMvc.perform(get("/product/create"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("createProduct"))
+                .andExpect(model().attributeExists("product"));
     }
 
     @Test
     void testCreateProductPost() throws Exception {
         mockMvc.perform(post("/product/create")
-                        .param("productName", "Laptop")
-                        .param("productQuantity", "5"))
-                .andExpect(status().is3xxRedirection());
+                        .flashAttr("product", product))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("list"));
 
         verify(service, times(1)).create(any(Product.class));
     }
 
     @Test
     void testProductListPage() throws Exception {
-        Product product = new Product();
-        product.setProductId("1");
-        product.setProductName("Mouse");
-        product.setProductQuantity(10);
-
-        when(service.findAll()).thenReturn(List.of(product));
+        List<Product> allProducts = new ArrayList<>();
+        allProducts.add(product);
+        when(service.findAll()).thenReturn(allProducts);
 
         mockMvc.perform(get("/product/list"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("productList"))
+                .andExpect(model().attribute("products", allProducts));
     }
 
     @Test
     void testEditProductPage() throws Exception {
-        Product product = new Product();
-        product.setProductId("1");
-        product.setProductName("Keyboard");
-        product.setProductQuantity(3);
+        when(service.findById(product.getProductId())).thenReturn(product);
 
-        when(service.findById("1")).thenReturn(product);
-
-        mockMvc.perform(get("/product/edit/1"))
-                .andExpect(status().isOk());
+        mockMvc.perform(get("/product/edit/" + product.getProductId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editProduct"))
+                .andExpect(model().attribute("product", product));
     }
 
     @Test
     void testEditProductPost() throws Exception {
         mockMvc.perform(post("/product/edit")
-                        .param("productId", "1")
-                        .param("productName", "Updated")
-                        .param("productQuantity", "7"))
-                .andExpect(status().is3xxRedirection());
+                        .flashAttr("product", product))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("list"));
 
         verify(service, times(1)).update(any(Product.class));
     }
 
     @Test
     void testDeleteProduct() throws Exception {
-        mockMvc.perform(get("/product/delete/1"))
-                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(get("/product/delete/" + product.getProductId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("../list"));
 
-        verify(service, times(1)).delete("1");
+        verify(service, times(1)).delete(product.getProductId());
     }
 }

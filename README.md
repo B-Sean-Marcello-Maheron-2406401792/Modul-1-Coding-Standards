@@ -75,3 +75,8 @@ Unit test yang telah dibuat untuk komponen `Order`, `OrderRepository`, dan `Orde
 
 **Langkah selanjutnya:**
 Untuk pengujian berikutnya, saya akan berusaha meningkatkan aspek **Thorough (Menyeluruh)** dengan mencoba lebih banyak *edge cases*, seperti menangani input yang tidak terduga atau menguji batasan jumlah produk dalam satu order.
+
+### Bonus 1
+Achieved 100% line & branch coverage
+
+![img2.png](img2.png)
