@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Detail</title>
+</head>
+<body>
+<h2>Payment Information</h2>
+
+<div th:if="${payment != null}">
+    <p><strong>Payment ID:</strong> <span th:text="${payment.id}"></span></p>
+    <p><strong>Order ID:</strong> <span th:text="${payment.order.id}"></span></p>
+    <p><strong>Payment Method:</strong> <span th:text="${payment.method}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${payment.status}"></span></p>
+
+    <h3>Additional Payment Data:</h3>
+    <ul>
+        <li th:each="entry : ${payment.paymentData}">
+            <strong th:text="${entry.key}"></strong> : <span th:text="${entry.value}"></span>
+        </li>
+    </ul>
+</div>
+
+<div th:if="${payment == null}">
+    <p style="color: red;"><strong>Payment not found.</strong> Please check your Payment ID and try again.</p>
+</div>
+
+<br>
+<a th:href="@{/payment/detail}">Search Another Payment</a>
+</body>
+</html>
