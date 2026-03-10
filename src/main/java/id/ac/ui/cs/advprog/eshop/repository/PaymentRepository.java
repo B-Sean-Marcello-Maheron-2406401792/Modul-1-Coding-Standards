@@ -4,26 +4,24 @@ import id.ac.ui.cs.advprog.eshop.model.Payment;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class PaymentRepository {
-    private List<Payment> paymentData = new ArrayList<>();
+    private final Map<String, Payment> paymentData = new LinkedHashMap<>();
 
     public Payment save(Payment payment) {
-        paymentData.removeIf(p -> p.getId().equals(payment.getId()));
-        paymentData.add(payment);
+        paymentData.put(payment.getId(), payment);
         return payment;
     }
 
     public Payment findById(String id) {
-        return paymentData.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        return paymentData.get(id);
     }
 
     public List<Payment> getAllPayments() {
-        return paymentData;
+        return new ArrayList<>(paymentData.values());
     }
 }
