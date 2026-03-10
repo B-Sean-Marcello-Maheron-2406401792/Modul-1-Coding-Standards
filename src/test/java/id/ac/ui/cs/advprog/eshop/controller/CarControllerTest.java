@@ -21,7 +21,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(
         controllers = CarController.class,
-        excludeAutoConfiguration = ThymeleafAutoConfiguration.class // Tambahkan baris ini
+        excludeAutoConfiguration = ThymeleafAutoConfiguration.class,
+        properties = {
+                "spring.mvc.view.prefix=/WEB-INF/jsp/",
+                "spring.mvc.view.suffix=.jsp"
+        }
 )
 class CarControllerTest {
 
