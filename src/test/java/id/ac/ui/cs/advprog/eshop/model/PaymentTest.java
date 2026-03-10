@@ -19,50 +19,89 @@ class PaymentTest {
 
     @Test
     void testVoucherSuccess() {
+        // Kasus: Semua kondisi terpenuhi (True && True && True && True)
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
-        Payment payment = new VoucherPayment("pay-1", order, paymentData);
+        Payment payment = new VoucherPayment("pay-v1", order, paymentData);
         assertEquals("SUCCESS", payment.getStatus());
     }
 
     @Test
+    void testVoucherRejected_Null() {
+        // Kasus: v == null
+        paymentData.put("voucherCode", null);
+        Payment payment = new VoucherPayment("pay-v2", order, paymentData);
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
     void testVoucherRejected_Not16Characters() {
-        // Panjang kurang dari 16 karakter (contoh: 13 karakter)
-        paymentData.put("voucherCode", "ESHOP12345678");
-        Payment payment = new VoucherPayment("pay-2", order, paymentData);
+        // Kasus: v.length() != 16 (Hanya 15 karakter)
+        paymentData.put("voucherCode", "ESHOP12345678AB");
+        Payment payment = new VoucherPayment("pay-v3", order, paymentData);
         assertEquals("REJECTED", payment.getStatus());
     }
 
     @Test
     void testVoucherRejected_NotStartsWithEshop() {
-        // Panjang 16 dan ada 8 angka, tapi tidak diawali ESHOP
+        // Kasus: !v.startsWith("ESHOP")
         paymentData.put("voucherCode", "XSHOP1234ABC5678");
-        Payment payment = new VoucherPayment("pay-3", order, paymentData);
+        Payment payment = new VoucherPayment("pay-v4", order, paymentData);
         assertEquals("REJECTED", payment.getStatus());
     }
 
     @Test
-    void testVoucherRejected_Not8Numerics() {
-        // Panjang 16 dan diawali ESHOP, tapi jumlah angka bukan 8 (contoh: 3 angka)
-        paymentData.put("voucherCode", "ESHOP123ABCDEFGH");
-        Payment payment = new VoucherPayment("pay-4", order, paymentData);
+    void testVoucherRejected_NotEnoughNumerics() {
+        // Kasus: Jumlah angka != 8 (Hanya ada 7 angka)
+        paymentData.put("voucherCode", "ESHOP1234ABC567X");
+        Payment payment = new VoucherPayment("pay-v5", order, paymentData);
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testVoucherRejected_TooManyNumerics() {
+        // Kasus: Jumlah angka != 8 (Ada 9 angka)
+        paymentData.put("voucherCode", "ESHOP123456789AB");
+        Payment payment = new VoucherPayment("pay-v6", order, paymentData);
         assertEquals("REJECTED", payment.getStatus());
     }
 
     @Test
     void testBankTransferSuccess() {
-        paymentData.put("bankName", "Bank UI");
-        paymentData.put("referenceCode", "REF123");
-        // UBAH BARIS INI: Gunakan BankTransferPayment
-        Payment payment = new BankTransferPayment("pay-2", order, paymentData);
+        paymentData.put("bankName", "Bank Mandiri");
+        paymentData.put("referenceCode", "REF123456");
+        Payment payment = new BankTransferPayment("pay-1", order, paymentData);
         assertEquals("SUCCESS", payment.getStatus());
     }
 
     @Test
-    void testBankTransferRejected() {
+    void testBankTransferRejected_BankNameNull() {
+        paymentData.put("bankName", null);
+        paymentData.put("referenceCode", "REF123");
+        Payment payment = new BankTransferPayment("pay-2", order, paymentData);
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testBankTransferRejected_BankNameEmpty() {
         paymentData.put("bankName", "");
-        paymentData.put("referenceCode", null);
-        // UBAH BARIS INI: Gunakan BankTransferPayment
+        paymentData.put("referenceCode", "REF123");
         Payment payment = new BankTransferPayment("pay-3", order, paymentData);
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testBankTransferRejected_ReferenceCodeNull() {
+        paymentData.put("bankName", "Bank Central Asia");
+        paymentData.put("referenceCode", null);
+        Payment payment = new BankTransferPayment("pay-4", order, paymentData);
+        assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testBankTransferRejected_ReferenceCodeEmpty() {
+        paymentData.put("bankName", "Bank Negara Indonesia");
+        paymentData.put("referenceCode", "");
+        Payment payment = new BankTransferPayment("pay-5", order, paymentData);
         assertEquals("REJECTED", payment.getStatus());
     }
 }
