@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Find Payment Detail</title>
+</head>
+<body>
+<h2>Search Payment Details</h2>
+<p>Please enter your Payment ID to see the status.</p>
+
+<form onsubmit="event.preventDefault(); window.location.href='/payment/detail/' + document.getElementById('paymentId').value;">
+    <label for="paymentId">Payment ID:</label>
+    <input type="text" id="paymentId" placeholder="e.g. 123e4567-e89b..." required/>
+    <button type="submit">Search</button>
+</form>
+</body>
+</html>
