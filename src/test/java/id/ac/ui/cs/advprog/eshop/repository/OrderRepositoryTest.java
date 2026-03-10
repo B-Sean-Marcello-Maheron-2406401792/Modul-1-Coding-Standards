@@ -1,5 +1,16 @@
 package id.ac.ui.cs.advprog.eshop.repository;
 
+import enums.OrderStatus;
+import id.ac.ui.cs.advprog.eshop.model.Order;
+import id.ac.ui.cs.advprog.eshop.model.Product;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 class OrderRepositoryTest {
 
     OrderRepository orderRepository;
