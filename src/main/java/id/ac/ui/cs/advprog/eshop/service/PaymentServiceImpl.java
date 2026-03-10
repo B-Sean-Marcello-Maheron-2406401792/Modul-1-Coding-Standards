@@ -15,13 +15,14 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment addPayment(Order order, String method, Map<String, String> paymentData) {
-        String id = UUID.randomUUID().toString();
-        Payment payment;
-        if ("VOUCHER".equals(method)) payment = new VoucherPayment(id, order, paymentData);
-        else if ("BANK_TRANSFER".equals(method)) payment = new BankTransferPayment(id, order, paymentData);
-        else throw new IllegalArgumentException("Method not supported");
-
+        Payment payment = createPaymentObject(UUID.randomUUID().toString(), order, method, paymentData);
         return paymentRepository.save(payment);
+    }
+
+    private Payment createPaymentObject(String id, Order order, String method, Map<String, String> data) {
+        if ("VOUCHER".equals(method)) return new VoucherPayment(id, order, data);
+        if ("BANK_TRANSFER".equals(method)) return new BankTransferPayment(id, order, data);
+        throw new IllegalArgumentException("Unsupported payment method");
     }
 
     @Override
