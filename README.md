@@ -48,3 +48,30 @@ Terakhir, terlampir coverage unit-test saya :3
 * **Kode Menjadi Rapuh (*Fragile*):** Tanpa SRP dan OCP, mengubah satu fitur dapat secara tidak sengaja mematahkan fitur lain karena logika yang saling tumpang tindih.
 * **Sulit Dipahami dan Dikelola:** *Class* yang menanggung banyak tugas (monolitik) sangat sulit dinavigasi dan membuat *developer* takut untuk melakukan perubahan.
 * **Pengujian Terhambat:** Kode yang saling terikat erat (*tightly coupled*) tanpa abstraksi antarmuka (melanggar DIP) tidak bisa diisolasi, sehingga *unit testing* menjadi sangat sulit dilakukan.
+
+
+# Module 4
+
+## Reflection
+
+### 1. Reflection on TDD Workflow (Based on Percival, 2017)
+Berdasarkan pertanyaan reflektif dari Percival (2017) mengenai evaluasi tujuan pengujian, alur kerja TDD (*Red-Green-Refactor*) yang diterapkan dalam latihan ini sangat berguna.
+
+* **Keyakinan (Confidence):** Menulis tes terlebih dahulu memberikan kepastian bahwa setiap baris kode yang ditulis memang diperlukan untuk memenuhi persyaratan bisnis. Saat fase implementasi selesai dan tes berubah menjadi hijau, ada keyakinan penuh bahwa fitur berfungsi sesuai ekspektasi.
+* **Desain (Design):** TDD memaksa saya untuk memikirkan kontrak metode (input/output) sebelum menulis logika. Hal ini menghasilkan kode yang lebih bersih, seperti penggunaan interface `OrderService` yang memisahkan definisi dan implementasi.
+* **Efisiensi:** Walaupun terlihat lebih lambat di awal, TDD mengurangi waktu yang dihabiskan untuk *debugging* manual di kemudian hari karena kesalahan logika tertangkap sejak dini oleh unit test.
+
+**Langkah selanjutnya:**
+Ke depannya, saya perlu lebih disiplin dalam fase **Refactor**. Setelah mencapai fase hijau (*Green*), saya harus meluangkan waktu lebih banyak untuk meninjau apakah ada pola kode yang bisa dioptimalkan tanpa mengubah fungsionalitasnya.
+
+### 2. Reflection on F.I.R.S.T. Principle
+Unit test yang telah dibuat untuk komponen `Order`, `OrderRepository`, dan `OrderService` telah mengikuti prinsip F.I.R.S.T sebagai berikut:
+
+* **Fast (Cepat):** Tes berjalan dalam hitungan milidetik karena menggunakan penyimpanan *in-memory* dan *mocking* dengan Mockito, menghindari beban proses dari database eksternal.
+* **Isolated (Terisolasi):** Setiap pengujian (seperti `testCreateOrder` dan `testUpdateStatus`) bersifat independen. Penggunaan `@BeforeEach` memastikan data dibersihkan dan disiapkan ulang sebelum setiap metode tes dijalankan.
+* **Repeatable (Dapat diulang):** Tes memberikan hasil yang sama setiap kali dijalankan karena tidak bergantung pada faktor eksternal yang berubah-ubah (seperti waktu server atau koneksi internet).
+* **Self-Validating (Validasi Mandiri):** Tes menggunakan *assertions* otomatis (`assertEquals`, `assertNull`, `assertThrows`) yang langsung memberikan status "Pass" atau "Fail" tanpa perlu pengecekan manual.
+* **Timely (Tepat Waktu):** Tes ditulis sebelum kode implementasi (*test-first*), sesuai dengan kaidah TDD untuk mengarahkan pengembangan logika program.
+
+**Langkah selanjutnya:**
+Untuk pengujian berikutnya, saya akan berusaha meningkatkan aspek **Thorough (Menyeluruh)** dengan mencoba lebih banyak *edge cases*, seperti menangani input yang tidak terduga atau menguji batasan jumlah produk dalam satu order.
